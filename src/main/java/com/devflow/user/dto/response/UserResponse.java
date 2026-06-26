@@ -1,9 +1,11 @@
 package com.devflow.user.dto.response;
 
 import com.devflow.user.entity.Role;
+import lombok.Setter;
 
 import java.util.UUID;
 
+@Setter
 public class UserResponse {
     UUID id;
 
