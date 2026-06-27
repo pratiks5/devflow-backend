@@ -3,10 +3,12 @@ package com.devflow.auth.service.impl;
 import com.devflow.auth.dto.LoginRequest;
 import com.devflow.auth.dto.LoginResponse;
 import com.devflow.auth.service.AuthService;
+import com.devflow.security.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
 
     @Override
@@ -22,9 +25,8 @@ public class AuthServiceImpl implements AuthService {
                 request.getEmail(),
                 request.getPassword()
         ));
-        System.out.println("Pratik-->"+authentication.getPrincipal());
-        System.out.println(authentication.getAuthorities());
-        System.out.println(authentication.isAuthenticated());
-        return new LoginResponse("Login Successful");
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String token = jwtService.generateToken(userDetails);
+        return new LoginResponse(token);
     }
 }

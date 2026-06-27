@@ -1,6 +1,7 @@
 package com.devflow.security;
 
 import com.devflow.exception.UserNotExistsException;
+import com.devflow.security.model.CustomUserDetails;
 import com.devflow.user.entity.User;
 import com.devflow.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,13 @@ public class CustomUserDetailsService implements UserDetailsService {
                 userRepository.findByEmail(email)
                         .orElseThrow(() -> new UsernameNotFoundException("User Not found"));
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPassword())
-                .roles(user.getRole().name())
-                .build();
+        return new CustomUserDetails(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getRole(),
+                user.getBusinessUnit().getName(),
+                user.getIsActive()
+        );
     }
 }
